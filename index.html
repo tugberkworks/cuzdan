@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Cüzdan" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Cüzdan</title>
+  <style>
+    :root {
+      --bg: #f2f2f7;
+      --card: #ffffff;
+      --soft: #eef0f5;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: rgba(0, 0, 0, 0.08);
+      --blue: #007aff;
+      --green: #10b981;
+      --green-soft: rgba(16, 185, 129, 0.14);
+      --red: #ef4444;
+      --red-soft: rgba(239, 68, 68, 0.14);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000;
+        --card: #1c1c1e;
+        --soft: #2c2c2e;
+        --text: #f9fafb;
+        --muted: #9ca3af;
+        --line: rgba(255, 255, 255, 0.12);
+        --blue: #0a84ff;
+        --green: #32d74b;
+        --green-soft: rgba(50, 215, 75, 0.16);
+        --red: #ff453a;
+        --red-soft: rgba(255, 69, 58, 0.16);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      padding-top: env(safe-area-inset-top, 16px);
+      padding-bottom: 120px;
+    }
+
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 14px 16px;
+    }
+
+    /* Üst Başlık */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      margin: 0;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+    }
+
+    .circle-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--text);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Ana Bakiye Kartı */
+    .wallet-card {
+      background: linear-gradient(145deg, #0f172a 0%, #1e293b 60%, #090d16 100%);
+      color: #ffffff;
+      border-radius: 26px;
+      padding: 22px;
+      margin-bottom: 22px;
+      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.25);
+    }
+
+    .wallet-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .privacy-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #ffffff;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .wallet-main {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 18px 0;
+    }
+
+    .wallet-total {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .net-tag {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .net-tag.pos { background: rgba(16, 185, 129, 0.22); color: #34d399; }
+    .net-tag.neg { background: rgba(239, 68, 68, 0.22); color: #f87171; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 12px;
+    }
+
+    .sum-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sum-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .sum-icon.in { background: rgba(16, 185, 129, 0.24); color: #34d399; }
+    .sum-icon.out { background: rgba(239, 68, 68, 0.24); color: #f87171; }
+
+    .sum-lbl { font-size: 11px; color: rgba(255, 255, 255, 0.68); }
+    .sum-val { font-size: 14px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+    .progress-track {
+      height: 6px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 99px;
+      overflow: hidden;
+      display: flex;
+      gap: 2px;
+      margin-top: 14px;
+    }
+
+    .progress-in { background: #34d399; height: 100%; transition: width 0.3s ease; }
+    .progress-out { background: #f87171; height: 100%; transition: width 0.3s ease; }
+
+    /* Bölüm Başlıkları */
+    .sec-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 22px 2px 10px 2px;
+    }
+
+    .sec-title { font-size: 17px; font-weight: 700; }
+
+    .sec-btn {
+      background: none;
+      border: none;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+
+    /* Hesap Kartları */
+    .acc-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .acc-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px 16px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .acc-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+    }
+
+    .acc-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 4px;
+      margin-bottom: 10px;
+    }
+
+    .acc-info { display: flex; align-items: center; gap: 12px; }
+
+    .acc-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .acc-title { font-size: 15px; font-weight: 700; }
+    .acc-nums { text-align: right; }
+    .acc-money { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .acc-share { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .acc-line {
+      height: 5px;
+      background: var(--soft);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-left: 4px;
+    }
+
+    .acc-fill { height: 100%; border-radius: 99px; }
+
+    /* Filtre Hapları */
+    .filters {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .filter-pill {
+      background: var(--card);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .filter-pill.active {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
+    }
+
+    /* İşlemler */
+    .tx-list {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 6px 16px;
+    }
+
+    .tx-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+    }
+
+    .tx-row:last-child { border-bottom: none; }
+    .tx-info { display: flex; align-items: center; gap: 12px; }
+
+    .tx-emoji {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .tx-emoji.income { background: var(--green-soft); }
+    .tx-emoji.expense { background: var(--red-soft); }
+
+    .tx-title { font-size: 14px; font-weight: 600; }
+    .tx-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .tx-amt { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .tx-amt.income { color: var(--green); }
+    .tx-amt.expense { color: var(--red); }
+
+    .empty {
+      text-align: center;
+      padding: 26px 16px;
+      color: var(--muted);
+      font-size: 13px;
+      background: var(--card);
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+    }
+
+    /* Alt Sabit Bar */
+    .bottom-dock {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px 16px calc(env(safe-area-inset-bottom, 8px) + 6px) 16px;
+      background: var(--bg);
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      z-index: 20;
+    }
+
+    .dock-row {
+      width: 100%;
+      max-width: 448px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      flex: 1;
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .action-btn.blue { background: var(--blue); color: #fff; }
+    .action-btn.white { background: var(--card); color: var(--text); border: 1px solid var(--line); }
+
+    .credit {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted);
+      opacity: 0.72;
+    }
+
+    /* Açılır Pencereler (Modal) */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-box {
+      background: var(--card);
+      width: 100%;
+      max-width: 480px;
+      border-top-left-radius: 26px;
+      border-top-right-radius: 26px;
+      padding: 20px 20px calc(env(safe-area-inset-bottom, 20px) + 20px) 20px;
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title { font-size: 18px; font-weight: 700; }
+
+    .close-x {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .group { margin-bottom: 14px; }
+
+    .label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .input, .select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .nakit-pill {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: var(--text);
+      padding: 9px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      cursor: pointer;
+    }
+
+    .nakit-pill.active {
+      background: var(--green-soft);
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    .type-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--soft);
+      padding: 4px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+
+    .type-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .type-btn.active {
+      background: var(--card);
+      color: var(--text);
+    }
+
+    .btn-block {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 6px;
+      cursor: pointer;
+    }
+
+    .btn-block.primary { background: var(--blue); color: #fff; }
+    .btn-block.danger { background: var(--red-soft); color: var(--red); margin-top: 10px; }
+    .btn-block.neutral { background: var(--soft); color: var(--text); margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <div class="topbar">
+    <div>
+      <h1 class="title">Cüzdan</h1>
+      <div class="subtitle">
+        <span class="dot"></span>
+        <span>Kalıcı Hafıza Aktif</span>
+      </div>
+    </div>
+    <button class="circle-btn" type="button" id="openSettingsBtn">⚙️</button>
+  </div>
+
+  <div class="wallet-card">
+    <div class="wallet-top">
+      <span>TOPLAM VARLIK</span>
+      <button class="privacy-btn" type="button" id="toggleHideBtn">👁️ Gizle</button>
+    </div>
+    <div class="wallet-main">
+      <div class="wallet-total" id="totalBalanceText">₺0,00</div>
+      <div class="net-tag pos" id="netFlowText">Net: ₺0,00</div>
+    </div>
+    <div class="summary-grid">
+      <div class="sum-item">
+        <div class="sum-icon in">↓</div>
+        <div>
+          <div class="sum-lbl">Aylık Gelir</div>
+          <div class="sum-val" id="totalIncomeText">₺0,00</div>
+        </div>
+      </div>
+      <div class="sum-item">
+        <div class="sum-icon out">↑</div>
+        <div>
+          <div class="sum-lbl">Aylık Gider</div>
+          <div class="sum-val" id="totalExpenseText">₺0,00</div>
+        </div>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-in" id="barIncome" style="width: 50%"></div>
+      <div class="progress-out" id="barExpense" style="width: 50%"></div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title">Hesaplar & Nakit</span>
+    <button class="sec-btn" type="button" id="topAddAccBtn">+ Hesap Ekle</button>
+  </div>
+  <div class="acc-list" id="accountsContainer"></div>
+
+  <div class="sec-head">
+    <span class="sec-title">Gelir & Gider Hareketleri</span>
+    <button class="sec-btn" type="button" id="topAddTxBtn">+ İşlem Ekle</button>
+  </div>
+  <div class="filters">
+    <button class="filter-pill active" type="button" data-filter="all">Tümü</button>
+    <button class="filter-pill" type="button" data-filter="income">Gelirler</button>
+    <button class="filter-pill" type="button" data-filter="expense">Giderler</button>
+  </div>
+  <div id="transactionsContainer"></div>
+</div>
+
+<div class="bottom-dock">
+  <div class="dock-row">
+    <button class="action-btn white" type="button" id="bottomAddAccBtn">🏦 Hesap Ekle</button>
+    <button class="action-btn blue" type="button" id="bottomAddTxBtn">＋ Gelir / Gider</button>
+  </div>
+  <div class="credit">Created by @tugberkkuruoglu</div>
+</div>
+
+<!-- Hesap Modal -->
+<div class="modal" id="accModal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <span class="modal-title" id="accModalTitle">Hesap Ekle</span>
+      <button class="close-x" type="button" data-close="accModal">✕</button>
+    </div>
+    <input type="hidden" id="accEditId" />
+    <button type="button" class="nakit-pill" id="nakitToggleBtn">💵 Nakit</button>
+    <div class="group">
+      <label class="label">Banka veya Hesap Adı</label>
+      <input type="text" class="input" id="accNameInput" placeholder="Örn: Garanti BBVA, Enpara, Nakit..." />
+    </div>
+    <div class="group">
+      <label class="label">Güncel Bakiye (₺)</label>
+      <input type="text" inputmode="decimal" class="input" id="accBalanceInput" placeholder="0,00" />
+    </div>
+    <button class="btn-block primary" type="button" id="saveAccBtn">Kaydet</button>
+    <button class="btn-block danger" type="button" id="deleteAccBtn" style="display:none;">Bu Hesabı Sil</button>
+  </div>
+</div>
+
+<!-- İşlem Modal -->
+<div class="modal" id="txModal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <span class="modal-title">Gelir / Gider Ekle</span>
+      <button class="close-x" type="button" data-close="txModal">✕</button>
+    </div>
+    <div class="type-switch">
+      <button class="type-btn active" type="button" id="typeExpenseBtn">Gider (-)</button>
+      <button class="type-btn" type="button" id="typeIncomeBtn">Gelir (+)</button>
+    </div>
+    <div class="group">
+      <label class="label">Açıklama</label>
+      <input type="text" class="input" id="txTitleInput" placeholder="Örn: Maaş, Market, Kira, Fatura..." />
+    </div>
+    <div class="group">
+      <label class="label">Tutar (₺)</label>
+      <input type="text" inputmode="decimal" class="input" id="txAmountInput" placeholder="0,00" />
+    </div>
+    <div class="group">
+      <label class="label">Hesap Seçin</label>
+      <select class="select" id="txAccountSelect"></select>
+    </div>
+    <button class="btn-block primary" type="button" id="saveTxBtn">İşlemi Kaydet</button>
+  </div>
+</div>
+
+<!-- Ayarlar Modal -->
+<div class="modal" id="settingsModal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <span class="modal-title">Veri Yönetimi & Yedek</span>
+      <button class="close-x" type="button" data-close="settingsModal">✕</button>
+    </div>
+    <p style="font-size: 13px; color: var(--muted); margin-top: 0; line-height: 1.5;">
+      Verileriniz hem <strong>IndexedDB</strong> veritabanında hem de <strong>LocalStorage</strong> üzerinde çift katmanlı saklanır. Aylar sonra girseniz bile son girdiğiniz haliyle kalır.
+    </p>
+    <button class="btn-block neutral" type="button" id="exportBtn">📤 Yedeği Dosya Olarak İndir (JSON)</button>
+    <button class="btn-block neutral" type="button" id="importBtn">📥 Yedek Dosyasından Geri Yükle</button>
+    <input type="file" id="importFileInput" accept=".json" style="display:none" />
+    <button class="btn-block danger" type="button" id="resetAllBtn">🗑️ Tüm Verileri Kalıcı Olarak Sıfırla</button>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'cuzdan_wallet_v5';
+  const IDB_NAME = 'CuzdanWalletDB_v5';
+  const IDB_STORE = 'walletData';
+
+  let wallet = {
+    accounts: [],
+    transactions: [],
+    hide: false,
+    updatedAt: null
+  };
+
+  let activeTxType = 'expense';
+  let activeFilter = 'all';
+
+  function parseNumber(val) {
+    if (typeof val === 'number') return Number.isFinite(val) ? val : 0;
+    if (!val) return 0;
+    const cleaned = String(val).trim().replace(/\s+/g, '').replace(',', '.');
+    const parsed = parseFloat(cleaned);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function normalizeData(raw) {
+    if (!raw || typeof raw !== 'object') {
+      return { accounts: [], transactions: [], hide: false, updatedAt: null };
+    }
+    const accounts = Array.isArray(raw.accounts)
+      ? raw.accounts.map(a => ({
+          id: String(a.id || ('acc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6))),
+          name: String(a.name || 'Hesap'),
+          balance: parseNumber(a.balance)
+        }))
+      : [];
+
+    const transactions = Array.isArray(raw.transactions)
+      ? raw.transactions.map(t => ({
+          id: String(t.id || ('tx_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6))),
+          type: t.type === 'income' ? 'income' : 'expense',
+          title: String(t.title || 'İşlem'),
+          amount: Math.max(0, parseNumber(t.amount)),
+          accountId: String(t.accountId || ''),
+          date: String(t.date || '')
+        }))
+      : [];
+
+    return {
+      accounts,
+      transactions,
+      hide: Boolean(raw.hide),
+      updatedAt: raw.updatedAt || null
+    };
+  }
+
+  function formatMoney(num) {
+    if (wallet.hide) return '•••••• ₺';
+    return new Intl.NumberFormat('tr-TR', {
+      style: 'currency',
+      currency: 'TRY',
+      minimumFractionDigits: 2
+    }).format(parseNumber(num));
+  }
+
+  function escapeText(str) {
+    return String(str || '').replace(/[&<>"']/g, ch => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+  }
+
+  function getBankVisual(name) {
+    const n = String(name || '').toLowerCase();
+    if (n.includes('garanti')) return { color: '#00854a', abbr: 'GR' };
+    if (n.includes('akbank')) return { color: '#dc2626', abbr: 'AK' };
+    if (n.includes('yapı') || n.includes('yapi')) return { color: '#1d4ed8', abbr: 'YK' };
+    if (n.includes('iş') || n.includes('is bank')) return { color: '#1e3a8a', abbr: 'İŞ' };
+    if (n.includes('ziraat')) return { color: '#b91c1c', abbr: 'ZR' };
+    if (n.includes('enpara')) return { color: '#7c3aed', abbr: 'EN' };
+    if (n.includes('qnb') || n.includes('finans')) return { color: '#312e81', abbr: 'QN' };
+    if (n.includes('vakıf') || n.includes('vakif')) return { color: '#d97706', abbr: 'VK' };
+    if (n.includes('halk')) return { color: '#0284c7', abbr: 'HL' };
+    if (n.includes('deniz')) return { color: '#0369a1', abbr: 'DN' };
+    if (n.includes('nakit')) return { color: '#059669', abbr: '💵' };
+    return {
+      color: '#475569',
+      abbr: String(name || '').trim().substring(0, 2).toUpperCase() || 'BK'
+    };
+  }
+
+  function getTxIcon(title, isIncome) {
+    const t = String(title || '').toLowerCase();
+    if (t.includes('maaş') || t.includes('maas')) return '💼';
+    if (t.includes('kira')) return '🏠';
+    if (t.includes('market') || t.includes('migros') || t.includes('bim') || t.includes('a101')) return '🛒';
+    if (t.includes('kahve') || t.includes('yemek') || t.includes('restoran')) return '☕';
+    if (t.includes('fatura') || t.includes('elektrik') || t.includes('su') || t.includes('internet')) return '🧾';
+    if (t.includes('yakıt') || t.includes('benzin') || t.includes('ulaşım')) return '⛽';
+    return isIncome ? '💰' : '💸';
+  }
+
+  function saveToIndexedDB(data) {
+    try {
+      if (!window.indexedDB) return;
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(IDB_STORE)) {
+          db.createObjectStore(IDB_STORE);
+        }
+      };
+      req.onsuccess = (e) => {
+        try {
+          const db = e.target.result;
+          const tx = db.transaction(IDB_STORE, 'readwrite');
+          tx.objectStore(IDB_STORE).put(data, STORAGE_KEY);
+        } catch (_) {}
+      };
+    } catch (_) {}
+  }
+
+  function saveAll() {
+    wallet.updatedAt = new Date().toISOString();
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(wallet));
+    } catch (_) {}
+    saveToIndexedDB(wallet);
+    renderUI();
+  }
+
+  function renderUI() {
+    const totalBalance = wallet.accounts.reduce((sum, a) => sum + parseNumber(a.balance), 0);
+    const totalIncome = wallet.transactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + parseNumber(t.amount), 0);
+    const totalExpense = wallet.transactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + parseNumber(t.amount), 0);
+
+    const net = totalIncome - totalExpense;
+    const netEl = document.getElementById('netFlowText');
+    netEl.textContent = `Net: ${net >= 0 ? '+' : ''}${formatMoney(net)}`;
+    netEl.className = `net-tag ${net >= 0 ? 'pos' : 'neg'}`;
+
+    document.getElementById('totalBalanceText').textContent = formatMoney(totalBalance);
+    document.getElementById('totalIncomeText').textContent = formatMoney(totalIncome);
+    document.getElementById('totalExpenseText').textContent = formatMoney(totalExpense);
+    document.getElementById('toggleHideBtn').textContent = wallet.hide ? '🙈 Göster' : '👁️ Gizle';
+
+    const flowTotal = totalIncome + totalExpense;
+    document.getElementById('barIncome').style.width = flowTotal > 0 ? `${(totalIncome / flowTotal) * 100}%` : '50%';
+    document.getElementById('barExpense').style.width = flowTotal > 0 ? `${(totalExpense / flowTotal) * 100}%` : '50%';
+
+    // Hesaplar
+    const accBox = document.getElementById('accountsContainer');
+    if (wallet.accounts.length === 0) {
+      accBox.innerHTML = `<div class="empty">Henüz hesap veya nakit eklenmedi.<br><strong>+ Hesap Ekle</strong> butonuna dokunarak başlayın.</div>`;
+    } else {
+      accBox.innerHTML = wallet.accounts.map(acc => {
+        const vis = getBankVisual(acc.name);
+        const bal = parseNumber(acc.balance);
+        const share = totalBalance > 0 ? Math.max(0, Math.min(100, Math.round((bal / totalBalance) * 100))) : 0;
+        return `
+          <div class="acc-card" data-acc-id="${escapeText(acc.id)}">
+            <div class="acc-bar" style="background:${vis.color}"></div>
+            <div class="acc-top">
+              <div class="acc-info">
+                <div class="acc-badge" style="background:${vis.color}">${vis.abbr}</div>
+                <div class="acc-title">${escapeText(acc.name)}</div>
+              </div>
+              <div class="acc-nums">
+                <div class="acc-money">${formatMoney(bal)}</div>
+                <div class="acc-share">%${share} pay</div>
+              </div>
+            </div>
+            <div class="acc-line">
+              <div class="acc-fill" style="width:${share}%;background:${vis.color}"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Hareketler
+    const filteredTx = wallet.transactions.filter(t => activeFilter === 'all' || t.type === activeFilter);
+    const txBox = document.getElementById('transactionsContainer');
+    if (filteredTx.length === 0) {
+      txBox.innerHTML = `<div class="empty">Bu görünümde henüz gelir veya gider kaydı yok.</div>`;
+    } else {
+      const reversed = [...filteredTx].reverse();
+      txBox.innerHTML = `<div class="tx-list">` + reversed.map(tx => {
+        const isInc = tx.type === 'income';
+        const acc = wallet.accounts.find(a => a.id === tx.accountId);
+        const subText = tx.date + (acc ? ` • ${acc.name}` : '');
+        return `
+          <div class="tx-row" data-tx-id="${escapeText(tx.id)}">
+            <div class="tx-info">
+              <div class="tx-emoji ${isInc ? 'income' : 'expense'}">${getTxIcon(tx.title, isInc)}</div>
+              <div>
+                <div class="tx-title">${escapeText(tx.title)}</div>
+                <div class="tx-meta">${escapeText(subText)}</div>
+              </div>
+            </div>
+            <div class="tx-amt ${isInc ? 'income' : 'expense'}">${isInc ? '+' : '-'}${formatMoney(tx.amount)}</div>
+          </div>
+        `;
+      }).join('') + `</div>`;
+    }
+  }
+
+  function showModal(id) {
+    document.getElementById(id).classList.add('show');
+  }
+
+  function hideModal(id) {
+    document.getElementById(id).classList.remove('show');
+  }
+
+  function updateNakitPill() {
+    const isNakit = document.getElementById('accNameInput').value.trim().toLowerCase() === 'nakit';
+    document.getElementById('nakitToggleBtn').classList.toggle('active', isNakit);
+  }
+
+  function openAccountEditor(accId = '') {
+    const titleEl = document.getElementById('accModalTitle');
+    const delBtn = document.getElementById('deleteAccBtn');
+    if (accId) {
+      const acc = wallet.accounts.find(a => a.id === accId);
+      if (!acc) return;
+      titleEl.textContent = 'Hesabı Düzenle';
+      document.getElementById('accEditId').value = acc.id;
+      document.getElementById('accNameInput').value = acc.name;
+      document.getElementById('accBalanceInput').value = acc.balance;
+      delBtn.style.display = 'block';
+    } else {
+      titleEl.textContent = 'Hesap Ekle';
+      document.getElementById('accEditId').value = '';
+      document.getElementById('accNameInput').value = '';
+      document.getElementById('accBalanceInput').value = '';
+      delBtn.style.display = 'none';
+    }
+    updateNakitPill();
+    showModal('accModal');
+  }
+
+  function openTransactionEditor() {
+    if (wallet.accounts.length === 0) {
+      alert('Önce en az bir banka hesabı veya Nakit eklemelisiniz.');
+      return;
+    }
+    document.getElementById('txTitleInput').value = '';
+    document.getElementById('txAmountInput').value = '';
+    setTransactionType('expense');
+
+    const selectEl = document.getElementById('txAccountSelect');
+    selectEl.innerHTML = wallet.accounts
+      .map(a => `<option value="${escapeText(a.id)}">${escapeText(a.name)}</option>`)
+      .join('');
+
+    showModal('txModal');
+  }
+
+  function setTransactionType(type) {
+    activeTxType = type;
+    document.getElementById('typeExpenseBtn').classList.toggle('active', type === 'expense');
+    document.getElementById('typeIncomeBtn').classList.toggle('active', type === 'income');
+  }
+
+  // Tüm Buton Bağlantıları
+  document.getElementById('openSettingsBtn').addEventListener('click', () => showModal('settingsModal'));
+
+  document.getElementById('toggleHideBtn').addEventListener('click', () => {
+    wallet.hide = !wallet.hide;
+    saveAll();
+  });
+
+  document.getElementById('topAddAccBtn').addEventListener('click', () => openAccountEditor());
+  document.getElementById('bottomAddAccBtn').addEventListener('click', () => openAccountEditor());
+
+  document.getElementById('topAddTxBtn').addEventListener('click', openTransactionEditor);
+  document.getElementById('bottomAddTxBtn').addEventListener('click', openTransactionEditor);
+
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => hideModal(btn.getAttribute('data-close')));
+  });
+
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('show');
+    });
+  });
+
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      activeFilter = pill.getAttribute('data-filter');
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      renderUI();
+    });
+  });
+
+  document.getElementById('nakitToggleBtn').addEventListener('click', () => {
+    const input = document.getElementById('accNameInput');
+    input.value = input.value.trim().toLowerCase() === 'nakit' ? '' : 'Nakit';
+    updateNakitPill();
+  });
+
+  document.getElementById('accNameInput').addEventListener('input', updateNakitPill);
+
+  document.getElementById('saveAccBtn').addEventListener('click', () => {
+    const id = document.getElementById('accEditId').value;
+    const name = document.getElementById('accNameInput').value.trim();
+    const balance = parseNumber(document.getElementById('accBalanceInput').value);
+
+    if (!name) {
+      alert('Lütfen bir banka veya hesap adı girin.');
+      return;
+    }
+
+    if (id) {
+      const idx = wallet.accounts.findIndex(a => a.id === id);
+      if (idx !== -1) wallet.accounts[idx] = { id, name, balance };
+    } else {
+      wallet.accounts.push({ id: 'acc_' + Date.now(), name, balance });
+    }
+
+    hideModal('accModal');
+    saveAll();
+  });
+
+  document.getElementById('deleteAccBtn').addEventListener('click', () => {
+    const id = document.getElementById('accEditId').value;
+    if (!id) return;
+    if (confirm('Bu hesabı silmek istediğinize emin misiniz?')) {
+      wallet.accounts = wallet.accounts.filter(a => a.id !== id);
+      hideModal('accModal');
+      saveAll();
+    }
+  });
+
+  document.getElementById('accountsContainer').addEventListener('click', (e) => {
+    const card = e.target.closest('.acc-card');
+    if (card) openAccountEditor(card.getAttribute('data-acc-id'));
+  });
+
+  document.getElementById('typeExpenseBtn').addEventListener('click', () => setTransactionType('expense'));
+  document.getElementById('typeIncomeBtn').addEventListener('click', () => setTransactionType('income'));
+
+  document.getElementById('saveTxBtn').addEventListener('click', () => {
+    const title = document.getElementById('txTitleInput').value.trim();
+    const amount = parseNumber(document.getElementById('txAmountInput').value);
+    const accountId = document.getElementById('txAccountSelect').value;
+
+    if (!title || amount <= 0) {
+      alert('Lütfen geçerli bir açıklama ve tutar girin.');
+      return;
+    }
+    if (!accountId) {
+      alert('Lütfen bir hesap seçin.');
+      return;
+    }
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' });
+
+    wallet.transactions.push({
+      id: 'tx_' + Date.now(),
+      type: activeTxType,
+      title,
+      amount,
+      accountId,
+      date: dateStr
+    });
+
+    const targetAcc = wallet.accounts.find(a => a.id === accountId);
+    if (targetAcc) {
+      const current = parseNumber(targetAcc.balance);
+      targetAcc.balance = activeTxType === 'income' ? current + amount : current - amount;
+    }
+
+    hideModal('txModal');
+    saveAll();
+  });
+
+  document.getElementById('transactionsContainer').addEventListener('click', (e) => {
+    const row = e.target.closest('.tx-row');
+    if (row && confirm('Bu hareketi silmek istiyor musunuz?')) {
+      const txId = row.getAttribute('data-tx-id');
+      wallet.transactions = wallet.transactions.filter(t => t.id !== txId);
+      saveAll();
+    }
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(wallet, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cuzdan-yedek-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('importBtn').addEventListener('click', () => {
+    document.getElementById('importFileInput').click();
+  });
+
+  document.getElementById('importFileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        if (Array.isArray(parsed.accounts) && Array.isArray(parsed.transactions)) {
+          wallet = normalizeData(parsed);
+          saveAll();
+          hideModal('settingsModal');
+          alert('Yedek başarıyla geri yüklendi!');
+        } else {
+          alert('Geçersiz yedek dosyası.');
+        }
+      } catch (_) {
+        alert('Dosya okunamadı.');
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('resetAllBtn').addEventListener('click', () => {
+    if (confirm('Tüm hesap ve hareket verileriniz kalıcı olarak sıfırlanacak. Emin misiniz?')) {
+      wallet = { accounts: [], transactions: [], hide: false, updatedAt: new Date().toISOString() };
+      try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+      saveAll();
+      hideModal('settingsModal');
+    }
+  });
+
+  // Başlangıç Yüklemesi
+  (function start() {
+    let lsRaw = null;
+    try {
+      const str = localStorage.getItem(STORAGE_KEY);
+      if (str) lsRaw = JSON.parse(str);
+    } catch (_) {}
+
+    if (lsRaw) {
+      wallet = normalizeData(lsRaw);
+    }
+    renderUI();
+
+    try {
+      if (window.indexedDB) {
+        const req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) {
+            db.createObjectStore(IDB_STORE);
+          }
+        };
+        req.onsuccess = (e) => {
+          try {
+            const db = e.target.result;
+            const tx = db.transaction(IDB_STORE, 'readonly');
+            const getReq = tx.objectStore(IDB_STORE).get(STORAGE_KEY);
+            getReq.onsuccess = () => {
+              if (getReq.result) {
+                const idbTime = new Date(getReq.result.updatedAt || 0).getTime();
+                const lsTime = new Date((lsRaw && lsRaw.updatedAt) || 0).getTime();
+                if (idbTime > lsTime) {
+                  wallet = normalizeData(getReq.result);
+                  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(wallet)); } catch (_) {}
+                  renderUI();
+                }
+              }
+            };
+          } catch (_) {}
+        };
+      }
+    } catch (_) {}
+
+    try {
+      if (navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist();
+      }
+    } catch (_) {}
+  })();
+</script>
+</body>
+</html>
